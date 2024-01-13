@@ -12,7 +12,7 @@ email = os.getenv('EMAIL')
 headers = authenticate(email, api_token)
 
 base_url = 'https://transferwise.atlassian.net/wiki'
-page_id = "2740585401"  # This is the incident parent page for 2023
+
 
 def _get_child_ids_from_response(child_page_results):
     child_ids = []
@@ -43,5 +43,26 @@ def get_ids_of_all_child_page_ids(page_id):
     print('Total number of child pages:', len(child_ids_all))
     return child_ids_all
 
+def fetch_content(page_id):
+    url = f'{base_url}/rest/api/content/{page_id}?expand=body.storage'
+    response = requests.get(
+        url,
+        headers=headers,
+    )
+
+    if response.status_code == 200:
+        title = response.json()['title']
+        html_body = response.json()['body']
+        print(response.json())
+    return None
+
+class PageItem:
+    html: str
+    title: str
+    id: str
+
 if __name__ == '__main__':
-    get_ids_of_all_child_page_ids(page_id)
+    page_id = "2740585401"  # This is the incident parent page for 2023
+    #child_ids = get_ids_of_all_child_page_ids(page_id)
+    page_id = '2973805876'
+    fetch_content(page_id)

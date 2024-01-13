@@ -9,7 +9,7 @@ email = os.getenv('EMAIL')
 headers = authenticate(email, api_token)
 
 base_url = 'https://transferwise.atlassian.net/wiki'
-page_id = "2740585401"
+page_id = "2740585401"  # This is the incident parent page for 2023
 url = f'{base_url}/rest/api/content/{page_id}/child/page'
 
 def get_child_ids_from_response(child_page_results):

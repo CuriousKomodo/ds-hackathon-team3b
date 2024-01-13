@@ -5,7 +5,7 @@ from pprint import pprint
 from authentication import authenticate
 
 api_token = os.getenv('API_TOKEN')
-email = 'kefei.hu@transferwise.com'
+email = os.getenv('EMAIL')
 headers = authenticate(email, api_token)
 
 base_url = 'https://transferwise.atlassian.net/wiki'

@@ -5,8 +5,7 @@ import base64
 
 load_dotenv()
 api_token = os.getenv('API_TOKEN')
-email = 'kefei.hu@transferwise.com'
-
+email = os.getenv('EMAIL')
 
 def authenticate(email, api_token):
     auth_string = f"{email}:{api_token}"

@@ -16,8 +16,10 @@ class PageItem:
         self.html = html
         self.title = title
         self.creation_date = creation_date
-        self.text = self.obtain_text()
+        # self.text = self.obtain_text()  # Not needed anymore
     def obtain_text(self):
+        """Meant to parse only visible string from the html, not needed anymore because
+        the html body returned by the API is clean, and give good strutural info about the page"""
         text = ''
         try:
             text = text_from_html(self.html)
@@ -27,8 +29,9 @@ class PageItem:
     def save(self, save_dir: str, format: str ='pickle'):
         assert format in ['pickle', 'json'], 'Format must be in pickle or json'
         if format == 'pickle':
-            with open(f'{save_dir}/{self.id}.pkl') as f:
-                pickle.dump(self.__dict__, f, 'wb')
+            with open(f'{save_dir}/{self.id}.pkl', 'wb') as handle:
+                pickle.dump(self.__dict__, handle, protocol=pickle.HIGHEST_PROTOCOL)
         else:
-            with open(f'{save_dir}/{self.id}.json') as f:
-                json.dump(self.__dict__, f)
+            json_object = json.dumps(self.__dict__, indent=4)
+            with open(f'{save_dir}/{self.id}.json', 'w') as handle:
+                handle.write(json_object)

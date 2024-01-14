@@ -1,4 +1,5 @@
 import os
+import pickle
 from typing import List
 
 import requests
@@ -53,22 +54,22 @@ def fetch_and_store_page_content(page_id: str, save_dir: str):
     )
     if response.status_code == 200:
         title = response.json()['title']
-        html_body = response.json()['body']
-        creation_date = response.json()
+        html_body = response.json()['body']['storage']['value']
+        creation_date = None ## Can be extracted from metadata or title
         page_item = PageItem(
             id=page_id,
             html=html_body,
             title=title,
             creation_date=creation_date
         )
-        page_item.save(save_dir)
+        page_item.save(save_dir, 'json')
     else:
         print(f'Error fetching page id={page_id} due to {response.status_code}')
 
 
 if __name__ == '__main__':
-    page_id = "2740585401"  # This is the incident parent page for 2023
+    page_id = "2917865412"  # This is the incident parent page for 2023
     child_ids = get_ids_of_all_child_page_ids(page_id)
-    # page_id = '2973805876'
+
     for child_id in tqdm(child_ids):
         fetch_and_store_page_content(page_id, save_dir='data')

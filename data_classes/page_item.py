@@ -2,7 +2,7 @@ import pickle
 import json
 from datetime import datetime
 
-from utils.extract_sections import text_from_html
+from utils.get_text import text_from_html
 
 
 class PageItem:

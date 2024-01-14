@@ -1,8 +1,10 @@
 import os
+from typing import List
 
 import requests
-from pprint import pprint
+from tqdm import tqdm
 from authentication import authenticate
+from data_classes.page_item import PageItem
 
 """Fetch all the child ids given the parent incident page, 
 then fetch the content from each child page"""
@@ -14,7 +16,7 @@ headers = authenticate(email, api_token)
 base_url = 'https://transferwise.atlassian.net/wiki'
 
 
-def _get_child_ids_from_response(child_page_results):
+def _get_child_ids_from_response(child_page_results: List[dict]) -> List[str]:
     child_ids = []
     for page in child_page_results:
         link = page['_links'].get('self')
@@ -23,7 +25,7 @@ def _get_child_ids_from_response(child_page_results):
     child_ids = list(set(child_ids))
     return child_ids
 
-def get_ids_of_all_child_page_ids(page_id):
+def get_ids_of_all_child_page_ids(page_id: str) -> List[str]:
     child_ids_all = []
 
     base_url = 'https://transferwise.atlassian.net/wiki'
@@ -43,30 +45,30 @@ def get_ids_of_all_child_page_ids(page_id):
     print('Total number of child pages:', len(child_ids_all))
     return child_ids_all
 
-def fetch_content(page_id):
+def fetch_and_store_page_content(page_id: str, save_dir: str):
     url = f'{base_url}/rest/api/content/{page_id}?expand=body.storage'
     response = requests.get(
         url,
         headers=headers,
     )
-
     if response.status_code == 200:
         title = response.json()['title']
         html_body = response.json()['body']
-        print(response.json())
-    return None
+        creation_date = response.json()
+        page_item = PageItem(
+            id=page_id,
+            html=html_body,
+            title=title,
+            creation_date=creation_date
+        )
+        page_item.save(save_dir)
+    else:
+        print(f'Error fetching page id={page_id} due to {response.status_code}')
 
-class PageItem:
-    def __init__(self, id, html, title):
-        self.id = id
-        self.html = html
-        self.title = title
-    def save(self, save_path):
-        with open(f'{save_path}/{self.id}.pkl'):
-            None
 
 if __name__ == '__main__':
     page_id = "2740585401"  # This is the incident parent page for 2023
-    #child_ids = get_ids_of_all_child_page_ids(page_id)
-    page_id = '2973805876'
-    fetch_content(page_id)
+    child_ids = get_ids_of_all_child_page_ids(page_id)
+    # page_id = '2973805876'
+    for child_id in tqdm(child_ids):
+        fetch_and_store_page_content(page_id, save_dir='data')

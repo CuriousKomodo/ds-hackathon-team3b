@@ -62,14 +62,14 @@ def fetch_and_store_page_content(page_id: str, save_dir: str):
             title=title,
             creation_date=creation_date
         )
-        page_item.save(save_dir, 'json')
+        page_item.save(save_dir, 'pickle')
     else:
         print(f'Error fetching page id={page_id} due to {response.status_code}')
 
 
 if __name__ == '__main__':
-    page_id = "2917865412"  # This is the incident parent page for 2023
+    page_id = "2740585401"  # This is the incident parent page for 2023
     child_ids = get_ids_of_all_child_page_ids(page_id)
 
-    for child_id in tqdm(child_ids):
-        fetch_and_store_page_content(page_id, save_dir='data')
+    for child_id in tqdm(child_ids[:100]):
+        fetch_and_store_page_content(child_id, save_dir='pickle_data')

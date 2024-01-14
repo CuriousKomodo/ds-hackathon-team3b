@@ -7,7 +7,7 @@ from utils.get_text import text_from_html
 
 class PageItem:
     """
-    This data class is the output of direct extraction from Confluence API.
+    This pickle_data class is the output of direct extraction from Confluence API.
     Each page item contains the title of the incident report, the date of creation,
     and the html of the confluence page.
     """

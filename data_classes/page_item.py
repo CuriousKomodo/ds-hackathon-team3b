@@ -2,6 +2,8 @@ import pickle
 import json
 from datetime import datetime
 
+from utils.extract_sections import text_from_html
+
 
 class PageItem:
     """
@@ -14,6 +16,14 @@ class PageItem:
         self.html = html
         self.title = title
         self.creation_date = creation_date
+        self.text = self.obtain_text()
+    def obtain_text(self):
+        text = ''
+        try:
+            text = text_from_html(self.html)
+        except:
+            print(f'Error getting visible text from page with id: {self.id}')
+        return text
     def save(self, save_dir: str, format: str ='pickle'):
         assert format in ['pickle', 'json'], 'Format must be in pickle or json'
         if format == 'pickle':

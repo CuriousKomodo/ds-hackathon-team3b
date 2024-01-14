@@ -57,9 +57,13 @@ def fetch_content(page_id):
     return None
 
 class PageItem:
-    html: str
-    title: str
-    id: str
+    def __init__(self, id, html, title):
+        self.id = id
+        self.html = html
+        self.title = title
+    def save(self, save_path):
+        with open(f'{save_path}/{self.id}.pkl'):
+            None
 
 if __name__ == '__main__':
     page_id = "2740585401"  # This is the incident parent page for 2023

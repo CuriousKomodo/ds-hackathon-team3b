@@ -1,10 +1,9 @@
 import os
-import pickle
 from typing import List
 
 import requests
 from tqdm import tqdm
-from authentication import authenticate
+from utils.authentication import authenticate
 from data_classes.page_item import PageItem
 
 """Fetch all the child ids given the parent incident page, 
@@ -46,7 +45,7 @@ def get_ids_of_all_child_page_ids(page_id: str) -> List[str]:
     print('Total number of child pages:', len(child_ids_all))
     return child_ids_all
 
-def fetch_and_store_page_content(page_id: str, save_dir: str):
+def fetch_and_store_page_content(page_id: str, save_dir: str, postmortem_id: str):
     url = f'{base_url}/rest/api/content/{page_id}?expand=body.storage'
     response = requests.get(
         url,
@@ -58,11 +57,12 @@ def fetch_and_store_page_content(page_id: str, save_dir: str):
         creation_date = None ## Can be extracted from metadata or title
         page_item = PageItem(
             id=page_id,
+            postmortem_id=postmortem_id,
             html=html_body,
             title=title,
             creation_date=creation_date
         )
-        page_item.save(save_dir, 'pickle')
+        page_item.save(save_dir, 'pickle', html_only=False)
     else:
         print(f'Error fetching page id={page_id} due to {response.status_code}')
 

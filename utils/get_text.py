@@ -17,7 +17,7 @@ def tag_visible(element):
         return False
     return True
 
-def text_from_html(body: Union[str, TextIOWrapper], keep_imporant_tags:bool =True):
+def text_from_html(body: Union[str, TextIOWrapper], keep_imporant_tags:bool =False):
     soup = BeautifulSoup(body, 'html.parser')
     el_with_texts = soup.findAll(string=True)
     el_with_visible_texts = filter(tag_visible, el_with_texts)
@@ -57,7 +57,7 @@ def text_from_html_preserving_table_html(body: Union[str, TextIOWrapper], keep_i
     return "\n".join(visible_texts)
 
 if __name__ == '__main__':
-    with open('../mock_data/page.html', 'r') as f:
+    with open('../data/page.html', 'r') as f:
         body = text_from_html_preserving_table_html(f)
     print('what')
 
